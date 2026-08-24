@@ -51,9 +51,11 @@ vec3 cone_filter(int colorblindness, vec3 color) {
 void main() {
     vec4 color;
 
-    if (Cubic_Particles && cubePos.z != 0.0) {
+    if (Cubic_Particles && size != 0.0) {
+        vec2 centerOffset = inverse(mat2(dFdx(inUV), dFdy(inUV))) * (vec2(0.5) - inUV);
+        vec3 particleCenter = cubePos + dFdx(cubePos) * centerOffset.x + dFdy(cubePos) * centerOffset.y;
         vec3 glp = normalize(-glPos);
-        vec3 com1 = -(1.0 / glp) * cubePos;
+        vec3 com1 = -(1.0 / glp) * particleCenter;
         vec3 com2 = size / abs(glp);
         vec3 t1 = com1 - com2;
         vec3 t2 = com1 + com2;
@@ -64,7 +66,7 @@ void main() {
         }
 
         vec3 norm = -sign(glp) * step(t1.yzx, t1) * step(t1.zxy, t1);
-        vec3 remapPos = (cubePos + glp * rayN) * 4.0 + 0.5;
+        vec3 remapPos = (particleCenter + glp * rayN) * 4.0 + 0.5;
         vec3 tex = vec3(abs(norm.x) != 1.0 ? (abs(norm.y) != 1.0 ? remapPos.xy : remapPos.xz) : remapPos.zy, rayN);
 
         vec2 divisor = (face.x == 0.0) ? vec2(1.0 - inUV.x, inUV.y) : vec2(1.0 - inUV.y, inUV.x);
@@ -76,7 +78,7 @@ void main() {
         color.rgb *= dot(norm, vec3(0.2, -1.0, 0.4)) * 0.5 + 1.0;
 
         vec4 depthPos = ProjMat * ModelViewMat * vec4(-glp * tex.z, 1.0);
-        gl_FragDepth = depthPos.z / depthPos.w * 0.5 + 0.5;
+        gl_FragDepth = depthPos.z / depthPos.w;
     } else {
         color = texture(Sampler0, texCoord0);
         if (color.a < 0.1) {
