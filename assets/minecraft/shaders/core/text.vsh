@@ -1,6 +1,9 @@
 #version 150
 
+#if !defined(IS_GUI) && !defined(IS_SEE_THROUGH)
 #moj_import <fog.glsl>
+#moj_import <sample_lightmap.glsl>
+#endif
 #moj_import <dynamictransforms.glsl>
 #moj_import <projection.glsl>
 #moj_import <vertex_utils.glsl>
@@ -9,12 +12,19 @@
 in vec3 Position;
 in vec4 Color;
 in vec2 UV0;
+#if !defined(IS_GUI) && !defined(IS_SEE_THROUGH)
 in ivec2 UV2;
+#endif
 
 uniform sampler2D Sampler0;
+#if !defined(IS_GUI) && !defined(IS_SEE_THROUGH)
 uniform sampler2D Sampler2;
+#endif
 
-out float vertexDistance;
+#if !defined(IS_GUI) && !defined(IS_SEE_THROUGH)
+out float sphericalVertexDistance;
+out float cylindricalVertexDistance;
+#endif
 out vec4 vertexColor;
 out vec4 tint;
 out vec2 texCoord0;
@@ -154,7 +164,12 @@ void main() {
 		}
 	}
 	
-	vertexColor = color * texelFetch(Sampler2, UV2 / 16, 0);
-    vertexDistance = fog_cylindrical_distance(Position);
+#if !defined(IS_GUI) && !defined(IS_SEE_THROUGH)
+	vertexColor = color * sample_lightmap(Sampler2, UV2);
+    sphericalVertexDistance = fog_spherical_distance(Position);
+    cylindricalVertexDistance = fog_cylindrical_distance(Position);
+#else
+    vertexColor = color;
+#endif
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 }
