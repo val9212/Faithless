@@ -24,10 +24,12 @@ void main() {
 	case 0:
 		if (ctrlV.rgb == vec3(239, 50, 61)) { // --- RELOAD SCREEN --- 
 			tint = vec4(Reload_Screen[vertID].rgb, Reload_Screen[vertID].a / 1.0 * Color.a);
-		} else if (ctrlV.rgb == vec3(16) && // --- CONTAINER BACKGROUND --- 
-			(Color.a == 0.81568626 && (vertID == 0 || vertID == 1)) || 
-			(Color.a == 0.75294122 && (vertID == 2 || vertID == 3))) {
-			vertID = remap_TL_BL_BR_TR[gl_VertexID % 4];
+		} else if (ctrlV.rgb == vec3(16) && // --- CONTAINER BACKGROUND ---
+			(ctrlV.a == 208 || ctrlV.a == 192) &&
+			abs(pos.x) > 0.99 && abs(pos.y) > 0.99) {
+			bool right = pos.x > 0.0;
+			bool top = pos.y > 0.0;
+			vertID = right ? (top ? 1 : 3) : (top ? 0 : 2);
 			tint = Inventory[vertID];
 		} break;
 	case 1800: 

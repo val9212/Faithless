@@ -75,8 +75,8 @@ void main() {
         }
         color.rgb *= dot(norm, vec3(0.2, -1.0, 0.4)) * 0.5 + 1.0;
 
-        vec4 depthPos = ProjMat * ModelViewMat * vec4(-glp * tex.z, 1.0);
-        gl_FragDepth = depthPos.z / depthPos.w * 0.5 + 0.5;
+        // Keep Minecraft's rasterized depth so particles remain occluded by blocks.
+        gl_FragDepth = gl_FragCoord.z;
     } else {
         color = texture(Sampler0, texCoord0);
         if (color.a < 0.1) {
