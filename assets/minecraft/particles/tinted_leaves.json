@@ -1,1 +1,8 @@
-{"textures":["leaf_0","leaf_1","leaf_2","leaf_3"]}
+{
+  "textures": [
+    "leaf_0_variant_0", "leaf_0_variant_1", "leaf_0_variant_2", "leaf_0_variant_3",
+    "leaf_1_variant_0", "leaf_1_variant_1", "leaf_1_variant_2", "leaf_1_variant_3",
+    "leaf_2_variant_0", "leaf_2_variant_1", "leaf_2_variant_2", "leaf_2_variant_3",
+    "leaf_3_variant_0", "leaf_3_variant_1", "leaf_3_variant_2", "leaf_3_variant_3"
+  ]
+}
