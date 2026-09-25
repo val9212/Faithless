@@ -69,9 +69,14 @@ void main() {
         vec3 remapPos = (particleCenter + glp * rayN) * 4.0 + 0.5;
         vec3 tex = vec3(abs(norm.x) != 1.0 ? (abs(norm.y) != 1.0 ? remapPos.xy : remapPos.xz) : remapPos.zy, rayN);
 
-        vec2 divisor = (face.x == 0.0) ? vec2(1.0 - inUV.x, inUV.y) : vec2(1.0 - inUV.y, inUV.x);
-        vec4 iUV = round(vec4(UV.xy / divisor.x, UV.zw / divisor.y));
-        color = texture(Sampler0, (min(iUV.xy, iUV.zw) + abs(iUV.xy - iUV.zw) * tex.xy) / vec2(textureSize(Sampler0, 0)));
+        vec2 atlasSize = vec2(textureSize(Sampler0, 0));
+        vec2 atlasPos = texCoord0 * atlasSize;
+        mat2 screenToParticle = inverse(mat2(dFdx(inUV), dFdy(inUV)));
+        vec2 minOffset = screenToParticle * (vec2(0.0) - inUV);
+        vec2 maxOffset = screenToParticle * (vec2(1.0) - inUV);
+        vec2 atlasMin = round(atlasPos + dFdx(atlasPos) * minOffset.x + dFdy(atlasPos) * minOffset.y);
+        vec2 atlasMax = round(atlasPos + dFdx(atlasPos) * maxOffset.x + dFdy(atlasPos) * maxOffset.y);
+        color = texture(Sampler0, mix(atlasMin, atlasMax, tex.xy) / atlasSize);
         if (color.a < 0.1) {
             discard;
         }
