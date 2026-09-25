@@ -72,8 +72,9 @@ void main() {
         vec2 texUV = UV0 * texSize;
         size = 0.0;
         float scale = 1.5;
+        bool blockAtlas = texSize.x == texSize.y && texSize.x >= 1024.0;
 
-        if (floor(texUV) != texUV && texSize.y / texSize.x != 4.0) {
+        if (blockAtlas || (floor(texUV) != texUV && texSize.y / texSize.x != 4.0)) {
             size = 3.0;
             pos.y += 0.0625;
         } else if (ctrlV.a == 1) {

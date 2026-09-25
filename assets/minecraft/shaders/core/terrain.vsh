@@ -15,7 +15,6 @@ in ivec2 UV2;
 in vec3 Normal;
 
 uniform sampler2D Sampler2;
-uniform sampler2D Sampler0;
 
 out float sphericalVertexDistance;
 out float cylindricalVertexDistance;
@@ -37,9 +36,6 @@ void main() {
 
 	vec3 ModelOffset = (ChunkPosition - CameraBlockPos) + CameraOffset;
 	vec3 pos = Position + ModelOffset;
-	vec3 blockPos = fract(Position) - 0.5;
-	vec3 absPos = vec3(abs(blockPos.x), (blockPos.y + 0.5), abs(blockPos.z)) * 16;
-	vec3 chunkPos = mod(round(Position), 16) + 1;
 	int vertID = gl_VertexID % 4;
 
 	switch (Chunk_Loading) {
