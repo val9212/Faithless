@@ -38,7 +38,10 @@ void main() {
 
 	fragColor = apply_fog(color, sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
 #ifdef ALPHA_CUTOUT
-	fragColor.a = 1.0;
+	// Preserve the authored glass transparency used by 3D bottle models.
+	if (ctrlF.a != 83 && ctrlF.a != 136) {
+		fragColor.a = 1.0;
+	}
 #else
 	if (ctrlF.a == 180 || ctrlF.a == 181 || ctrlF.a == 250) {
 		fragColor.a = 1.0;
